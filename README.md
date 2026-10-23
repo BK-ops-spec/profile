@@ -1,3 +1,5 @@
-# Baris Koca — Profile
+# Personal Profile — Baris Koca
 
-Live site: https://BK-ops-spec.github.io/profile/
+Business Management &bull; Technical Cyber Security &bull; Web Development
+
+Live site: https://bk-ops-spec.github.io/profile/
