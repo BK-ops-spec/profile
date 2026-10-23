@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Baris Koca</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --bg-card: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        /* Standard A4 Single Page Box */
+        .cv-page {
+            width: 210mm;
+            height: 297mm;
+            background: #ffffff;
+            padding: 32px 36px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header Area */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        header h1 {
+            font-size: 22pt;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .tagline {
+            font-size: 8.5pt;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .contact-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 8pt;
+            color: var(--text-muted);
+        }
+
+        .contact-bar span, .contact-bar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .contact-bar a:hover {
+            color: var(--primary);
+        }
+
+        .contact-bar i {
+            color: var(--primary);
+            font-size: 8.5pt;
+        }
+
+        /* Top-Right Modern Logo Styling */
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .logo-link:hover {
+            transform: scale(1.06);
+        }
+
+        .logo-badge {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .logo-svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        /* Profile Summary */
+        .summary {
+            font-size: 8.5pt;
+            line-height: 1.45;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        /* Main Layout Grid (2 Columns) */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 22px;
+            flex-grow: 1;
+        }
+
+        /* Section Headings */
+        .section-title {
+            font-size: 9.5pt;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 1.5px solid var(--border-color);
+            padding-bottom: 4px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 9pt;
+        }
+
+        /* Experience Styles */
+        .job-item {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .job-title {
+            font-size: 9pt;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .job-meta {
+            font-size: 7.5pt;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .job-company {
+            font-size: 8pt;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .job-bullet {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .job-bullet li {
+            position: relative;
+            padding-left: 12px;
+            font-size: 8pt;
+            line-height: 1.35;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .job-bullet li::before {
+            content: "";
+            position: absolute;
+            left: 2px;
+            top: 5px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: var(--primary);
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Skills Chips */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .skill-badge {
+            background: var(--bg-card);
+            color: var(--text-dark);
+            font-size: 7.5pt;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Sidebar Content */
+        .side-block {
+            margin-bottom: 8px;
+        }
+
+        .side-block-title {
+            font-size: 8.5pt;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .side-block-sub {
+            font-size: 7.8pt;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .cert-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cert-list li {
+            font-size: 7.8pt;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            line-height: 1.25;
+            position: relative;
+            padding-left: 10px;
+        }
+
+        .cert-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Print Settings for A4 Single-Page Output */
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .cv-page {
+                box-shadow: none;
+                width: 100%;
+                height: 100vh;
+                padding: 20px 25px;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cv-page">
+        <!-- HEADER -->
+        <header>
+            <div class="header-content">
+                <h1>Baris Koca</h1>
+                <div class="tagline">Business Management &bull; Technical Cyber Security &bull; Web Development</div>
+                <div class="contact-bar">
+                    <span><i class="fas fa-location-dot"></i> London, UK</span>
+                    <a href="tel:+447861623903"><i class="fas fa-phone"></i> +44 7861 623903</a>
+                    <a href="mailto:bariskoca@proton.me"><i class="fas fa-envelope"></i> bariskoca@proton.me</a>
+                    <a href="https://profilebk.netlify.app/" target="_blank"><i class="fas fa-globe"></i> profilebk.netlify.app</a>
+                </div>
+            </div>
+
+            <!-- UNIQUE TOP-RIGHT LINKED LOGO -->
+            <a href="https://profilebk.netlify.app/" target="_blank" class="logo-link" title="Visit Baris Koca's Portfolio">
+                <div class="logo-badge">
+                    <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#38bdf8" />
+                                <stop offset="100%" stop-color="#0284c7" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Outer Tech Ring -->
+                        <circle cx="50" cy="50" r="42" stroke="url(#logoGrad)" stroke-width="4" stroke-dasharray="200" stroke-dashoffset="30" />
+                        <!-- Monogram "BK" Text -->
+                        <text x="50%" y="58%" text-anchor="middle" fill="#ffffff" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="34" letter-spacing="-1">BK</text>
+                        <!-- Accent Cyber Dot -->
+                        <circle cx="76" cy="24" r="5" fill="#38bdf8" />
+                    </svg>
+                </div>
+            </a>
+        </header>
+
+        <!-- PROFILE SUMMARY -->
+        <div class="summary">
+            Dedicated professional blending strong business management expertise with hands-on technical skills in web development, network security, and ethical hacking. Proven track record of managing teams, optimizing operational efficiency, and maintaining strict compliance in fast-paced environments. Seeking to leverage leadership and technical capabilities to drive success in a dynamic organization.
+        </div>
+
+        <!-- MAIN TWO-COLUMN CONTENT -->
+        <div class="main-layout">
+            
+            <!-- LEFT COLUMN: EXPERIENCE -->
+            <div class="main-content">
+                <div class="section-title">
+                    <i class="fas fa-briefcase"></i> Work Experience
+                </div>
+
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-title">Transport Manager</span>
+                        <span class="job-meta">2017 – 2024</span>
+                    </div>
+                    <div class="job-company">Sole Trader | London</div>
+                    <ul class="job-bullet">
+                        <li>Coordinated transportation activities across clients, suppliers, and partner companies.</li>
+                        <li>Monitored compliance with safety regulations, proactively mitigating operational risks.</li>
+                        <li>Scheduled and tracked vehicle maintenance to minimize unplanned downtime.</li>
+                        <li>Developed and monitored company budgets, ensuring strict financial oversight.</li>
+                    </ul>
+                </div>
+
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-title">Office Manager</span>
+                        <span class="job-meta">2016 – 2017</span>
+                    </div>
+                    <div class="job-company">Abbey Cars Ltd | Hackney</div>
+                    <ul class="job-bullet">
+                        <li>Managed operations for a fleet of 15–30 minicab drivers and vehicles safely and efficiently.</li>
+                        <li>Allocated daily tasks, route optimizations, and handled prompt issue escalations.</li>
+                        <li>Provided remote troubleshooting support for drivers on the road.</li>
+                        <li>Implemented robust safety protocols and routine vehicle check systems.</li>
+                    </ul>
+                </div>
+
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-title">Shift Manager</span>
+                        <span class="job-meta">2015 – 2016</span>
+                    </div>
+                    <div class="job-company">Bagel Bar | Waterloo</div>
+                    <ul class="job-bullet">
+                        <li>Supervised front-of-house operations and ensured strict food safety compliance.</li>
+                        <li>Managed staff scheduling, daily register reconciliation, cash deposits, and conflict resolution.</li>
+                        <li>Controlled inventory levels, placed supplier orders, and minimized waste to boost profit margins.</li>
+                    </ul>
+                </div>
+
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-title">Shift Manager</span>
+                        <span class="job-meta">2012 – 2015</span>
+                    </div>
+                    <div class="job-company">7 Oaks Grill | London</div>
+                    <ul class="job-bullet">
+                        <li>Directed floor and kitchen teams during high-volume hours to maintain fast service.</li>
+                        <li>Onboarded and trained new staff on hospitality standards, POS systems, and health & safety.</li>
+                        <li>Oversee daily opening/closing routines, supplier deliveries, and overall floor readiness.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: SKILLS, EDUCATION, CERTS -->
+            <div class="sidebar">
+                
+                <!-- SKILLS -->
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-cogs"></i> Core Skills
+                    </div>
+                    <div class="skills-grid">
+                        <span class="skill-badge">Business Management</span>
+                        <span class="skill-badge">Team Leading</span>
+                        <span class="skill-badge">Project Management</span>
+                        <span class="skill-badge">Web Design & Dev</span>
+                        <span class="skill-badge">Cyber Security</span>
+                        <span class="skill-badge">Networks</span>
+                        <span class="skill-badge">Pentesting</span>
+                        <span class="skill-badge">Kali Linux</span>
+                        <span class="skill-badge">Microsoft 365</span>
+                    </div>
+                </div>
+
+                <!-- EDUCATION -->
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-graduation-cap"></i> Education
+                    </div>
+                    <div class="side-block">
+                        <div class="side-block-title">BA (Hons) Business Management</div>
+                        <div class="side-block-sub">University of Sunderland (2020 – 2023)</div>
+                    </div>
+                </div>
+
+                <!-- CERTIFICATIONS & QUALIFICATIONS -->
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-certificate"></i> Certifications
+                    </div>
+                    <ul class="cert-list">
+                        <li><strong>Pentest+ / Vulnerability Assessment</strong></li>
+                        <li><strong>Web Design & Development Level 3</strong></li>
+                        <li><strong>Networks & Cyber Security Level 3</strong></li>
+                        <li><strong>HNC Business Management & Environmental Factors</strong></li>
+                        <li>English, Maths & IT Qualifications</li>
+                        <li>Personal Trainer & Fitness Instructor</li>
+                        <li>NVQ Barbering Level 2</li>
+                    </ul>
+                </div>
+
+                <!-- PORTFOLIO / PROJECTS -->
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-laptop-code"></i> Projects
+                    </div>
+                    <div class="side-block">
+                        <div class="side-block-title">GitHub</div>
+                        <div class="side-block-sub">
+                            <a href="https://github.com/BK-ops-spec" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+                                https://github.com/BK-ops-spec
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

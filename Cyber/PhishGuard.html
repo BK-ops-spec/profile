@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PhishGuard — Phishing Awareness Simulator</title>
+
+<style>
+:root{
+  --bg:#07111f;
+  --panel:#0d1b2d;
+  --panel2:#12243a;
+  --border:#203852;
+  --text:#f5f8fc;
+  --muted:#91a4b8;
+  --blue:#3b82f6;
+  --cyan:#06b6d4;
+  --green:#22c55e;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 80% 0%,rgba(59,130,246,.12),transparent 35%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button{font:inherit;cursor:pointer}
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:250px;
+  position:fixed;
+  inset:0 auto 0 0;
+  background:#081321;
+  border-right:1px solid var(--border);
+  padding:24px 15px;
+  z-index:20;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:800;
+  font-size:20px;
+  margin-bottom:35px;
+  padding:0 10px;
+}
+
+.logoIcon{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--blue),#7c3aed);
+}
+
+.navLabel{
+  color:#587089;
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:0 12px;
+  margin:20px 0 8px;
+}
+
+.nav{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  padding:12px;
+  border-radius:9px;
+  text-align:left;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-bottom:4px;
+}
+
+.nav:hover,.nav.active{
+  background:var(--panel2);
+  color:white;
+}
+
+.nav.active{
+  box-shadow:inset 3px 0 var(--blue);
+}
+
+.main{
+  margin-left:250px;
+  width:calc(100% - 250px);
+  padding:30px 38px;
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:28px;
+}
+
+h1{font-size:28px;margin-bottom:6px}
+h2{font-size:19px}
+h3{font-size:16px}
+
+.muted{color:var(--muted)}
+
+.user{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.avatar{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+}
+
+.gridStats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:rgba(13,27,45,.9);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.statLabel{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:10px;
+}
+
+.statValue{
+  font-size:28px;
+  font-weight:800;
+}
+
+.blue{color:#60a5fa}
+.green{color:#4ade80}
+.yellow{color:#fbbf24}
+.red{color:#f87171}
+
+.twoCol{
+  display:grid;
+  grid-template-columns:1.35fr .75fr;
+  gap:20px;
+}
+
+.sectionHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+}
+
+.btn{
+  border:1px solid var(--border);
+  background:var(--panel2);
+  color:white;
+  padding:10px 16px;
+  border-radius:9px;
+  font-weight:700;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  border-color:#416284;
+}
+
+.btnPrimary{
+  background:var(--blue);
+  border-color:var(--blue);
+}
+
+.btnSuccess{
+  background:rgba(34,197,94,.12);
+  border-color:rgba(34,197,94,.3);
+  color:#86efac;
+}
+
+.btnDanger{
+  background:rgba(239,68,68,.1);
+  border-color:rgba(239,68,68,.3);
+  color:#fca5a5;
+}
+
+.btnWarning{
+  background:rgba(245,158,11,.1);
+  border-color:rgba(245,158,11,.3);
+  color:#fcd34d;
+}
+
+.buttonRow{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+
+.email{
+  background:#f8fafc;
+  color:#172033;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.emailHeader{
+  background:#edf2f7;
+  padding:16px 18px;
+  border-bottom:1px solid #d7e0e9;
+}
+
+.subject{
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.emailMeta{
+  color:#607086;
+  font-size:12px;
+  line-height:1.7;
+}
+
+.emailBody{
+  padding:24px;
+  line-height:1.7;
+  font-size:14px;
+}
+
+.fakeLink{
+  display:inline-block;
+  padding:10px 15px;
+  margin:14px 0;
+  border-radius:7px;
+  background:#2563eb;
+  color:white;
+  font-weight:700;
+}
+
+.feedback{
+  padding:16px;
+  border-radius:10px;
+  margin-top:15px;
+  line-height:1.6;
+}
+
+.feedback.good{
+  background:rgba(34,197,94,.09);
+  border:1px solid rgba(34,197,94,.3);
+  color:#bbf7d0;
+}
+
+.feedback.bad{
+  background:rgba(239,68,68,.09);
+  border:1px solid rgba(239,68,68,.3);
+  color:#fecaca;
+}
+
+.feedback.info{
+  background:rgba(59,130,246,.09);
+  border:1px solid rgba(59,130,246,.3);
+  color:#bfdbfe;
+}
+
+.progressCircle{
+  width:145px;
+  height:145px;
+  border-radius:50%;
+  margin:15px auto 20px;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle,var(--panel) 59%,transparent 60%),
+    conic-gradient(var(--blue) var(--progress),#203752 0);
+}
+
+.progressCircle strong{font-size:30px}
+
+.center{text-align:center}
+
+.module{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.module:last-child{border:0}
+
+.moduleIcon{
+  width:38px;
+  height:38px;
+  border-radius:9px;
+  background:var(--panel2);
+  display:grid;
+  place-items:center;
+}
+
+.moduleInfo{flex:1}
+
+.moduleInfo strong{
+  display:block;
+  font-size:13px;
+}
+
+.moduleInfo span{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.lessonGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:17px;
+}
+
+.lesson{
+  min-height:210px;
+}
+
+.lesson:hover{
+  border-color:#31577d;
+}
+
+.lessonIcon{
+  font-size:28px;
+  margin-bottom:15px;
+}
+
+.lesson p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  margin:9px 0 18px;
+}
+
+.bar{
+  height:7px;
+  background:#1b3048;
+  border-radius:20px;
+  overflow:hidden;
+  margin:14px 0;
+}
+
+.bar span{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+}
+
+.quizOption{
+  display:block;
+  width:100%;
+  text-align:left;
+  border:1px solid var(--border);
+  background:var(--panel2);
+  color:white;
+  padding:15px;
+  border-radius:10px;
+  margin:9px 0;
+}
+
+.quizOption:hover{
+  border-color:var(--blue);
+}
+
+.quizOption.correct{
+  background:rgba(34,197,94,.12);
+  border-color:var(--green);
+}
+
+.quizOption.wrong{
+  background:rgba(239,68,68,.12);
+  border-color:var(--red);
+}
+
+.alert{
+  padding:14px;
+  border-radius:10px;
+  margin:15px 0;
+  background:rgba(245,158,11,.09);
+  border:1px solid rgba(245,158,11,.25);
+  color:#fde68a;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.table th,.table td{
+  text-align:left;
+  padding:14px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+
+.table th{color:var(--muted)}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:20px;
+  font-size:11px;
+  background:rgba(34,197,94,.12);
+  color:#86efac;
+}
+
+.setting{
+  padding:18px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.setting:last-child{border:0}
+
+.toggle{
+  width:45px;
+  height:24px;
+  border-radius:20px;
+  border:0;
+  background:#334155;
+  position:relative;
+}
+
+.toggle.on{background:var(--blue)}
+
+.toggle::after{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:white;
+  top:3px;
+  left:3px;
+  transition:.2s;
+}
+
+.toggle.on::after{left:24px}
+
+.back{
+  margin-bottom:18px;
+}
+
+ul{
+  padding-left:20px;
+  margin:10px 0;
+}
+
+li{margin:5px 0}
+
+.empty{
+  padding:40px;
+  text-align:center;
+  color:var(--muted);
+}
+
+@media(max-width:1050px){
+  .gridStats{grid-template-columns:repeat(2,1fr)}
+  .twoCol{grid-template-columns:1fr}
+  .lessonGrid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:700px){
+  .sidebar{
+    width:68px;
+    padding:18px 9px;
+  }
+
+  .logo span,.nav span,.navLabel{display:none}
+
+  .logo{justify-content:center;padding:0}
+
+  .nav{justify-content:center}
+
+  .main{
+    margin-left:68px;
+    width:calc(100% - 68px);
+    padding:20px;
+  }
+
+  .gridStats,.lessonGrid{grid-template-columns:1fr}
+
+  .userText{display:none}
+
+  h1{font-size:23px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <div class="logo">
+    <div class="logoIcon">🛡️</div>
+    <span>PhishGuard</span>
+  </div>
+
+  <div class="navLabel">Main</div>
+
+  <button class="nav active" data-page="dashboard">
+    📊 <span>Dashboard</span>
+  </button>
+
+  <button class="nav" data-page="training">
+    🎓 <span>Training</span>
+  </button>
+
+  <button class="nav" data-page="simulator">
+    🎣 <span>Simulator</span>
+  </button>
+
+  <button class="nav" data-page="progress">
+    📈 <span>Progress</span>
+  </button>
+
+  <div class="navLabel">Support</div>
+
+  <button class="nav" data-page="settings">
+    ⚙️ <span>Settings</span>
+  </button>
+
+  <button class="nav" data-page="help">
+    ❓ <span>Help</span>
+  </button>
+
+</aside>
+
+
+<main class="main">
+
+<!-- ================= DASHBOARD ================= -->
+
+<section id="dashboard" class="page active">
+
+  <div class="topbar">
+    <div>
+      <h1>Welcome👋</h1>
+      <p class="muted">Build stronger phishing awareness skills.</p>
+    </div>
+
+    <div class="user">
+      <div class="userText">
+        <strong id="userName">Alex Morgan</strong>
+        <small class="muted">Learner</small>
+      </div>
+      <div class="avatar">AM</div>
+    </div>
+  </div>
+
+
+  <div class="gridStats">
+
+    <div class="card">
+      <div class="statLabel">AWARENESS SCORE</div>
+      <div class="statValue blue" id="scoreStat">0%</div>
+    </div>
+
+    <div class="card">
+      <div class="statLabel">SCENARIOS COMPLETED</div>
+      <div class="statValue" id="scenarioStat">0</div>
+    </div>
+
+    <div class="card">
+      <div class="statLabel">LESSONS COMPLETED</div>
+      <div class="statValue green" id="lessonStat">0</div>
+    </div>
+
+    <div class="card">
+      <div class="statLabel">TRAINING STREAK</div>
+      <div class="statValue yellow" id="streakStat">0 days</div>
+    </div>
+
+  </div>
+
+
+  <div class="twoCol">
+
+    <div class="card">
+
+      <div class="sectionHeader">
+        <h2>Today's Simulation</h2>
+        <span class="muted">Safe environment</span>
+      </div>
+
+      <div class="email">
+
+        <div class="emailHeader">
+
+          <div class="subject">
+            Action required: Account verification
+          </div>
+
+          <div class="emailMeta">
+            From: IT Support
+            &lt;support@company-security.example&gt;<br>
+            To: alex@example.test
+          </div>
+
+        </div>
+
+        <div class="emailBody">
+
+          <p>Hello Alex,</p>
+
+          <p>
+            We detected unusual activity on your account.
+            Please verify your account immediately to prevent
+            temporary access restrictions.
+          </p>
+
+          <div class="fakeLink">
+            Verify account
+          </div>
+
+          <p>
+            IT Security Team<br>
+            Example Corporation
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="buttonRow">
+
+        <button class="btn btnSuccess"
+          onclick="evaluateSimulation('report')">
+          🚩 Report phishing
+        </button>
+
+        <button class="btn"
+          onclick="evaluateSimulation('verify')">
+          🔎 Verify first
+        </button>
+
+        <button class="btn btnDanger"
+          onclick="evaluateSimulation('click')">
+          ⚠️ Open link
+        </button>
+
+      </div>
+
+      <div id="dashboardFeedback"></div>
+
+    </div>
+
+
+    <div class="card center">
+
+      <h2>Your progress</h2>
+
+      <div class="progressCircle" id="progressCircle">
+        <strong id="progressPercent">0%</strong>
+      </div>
+
+      <p class="muted">
+        Complete lessons and simulations to improve your score.
+      </p>
+
+      <div style="margin-top:20px;text-align:left">
+
+        <div class="module">
+          <div class="moduleIcon">🎓</div>
+          <div class="moduleInfo">
+            <strong>Training</strong>
+            <span id="trainingProgress">0 completed</span>
+          </div>
+          <span>→</span>
+        </div>
+
+        <div class="module">
+          <div class="moduleIcon">🎣</div>
+          <div class="moduleInfo">
+            <strong>Simulations</strong>
+            <span id="simulationProgress">0 completed</span>
+          </div>
+          <span>→</span>
+        </div>
+
+      </div>
+
+      <div class="buttonRow">
+        <button class="btn btnPrimary" data-page="training">
+          Continue training
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= TRAINING ================= -->
+
+<section id="training" class="page">
+
+  <div class="topbar">
+    <div>
+      <h1>Training Centre</h1>
+      <p class="muted">
+        Learn how to recognize common phishing techniques.
+      </p>
+    </div>
+  </div>
+
+  <div id="lessonGrid" class="lessonGrid"></div>
+
+</section>
+
+
+<!-- ================= LESSON ================= -->
+
+<section id="lessonPage" class="page">
+
+  <button class="btn back" data-page="training">
+    ← Back to training
+  </button>
+
+  <div id="lessonContent"></div>
+
+</section>
+
+
+<!-- ================= SIMULATOR ================= -->
+
+<section id="simulator" class="page">
+
+  <div class="topbar">
+    <div>
+      <h1>Phishing Simulator</h1>
+      <p class="muted">
+        Practice identifying suspicious messages safely.
+      </p>
+    </div>
+  </div>
+
+  <div id="scenarioGrid" class="lessonGrid"></div>
+
+</section>
+
+
+<!-- ================= SCENARIO ================= -->
+
+<section id="scenarioPage" class="page">
+
+  <button class="btn back" data-page="simulator">
+    ← Back to simulator
+  </button>
+
+  <div id="scenarioContent"></div>
+
+</section>
+
+
+<!-- ================= RESULTS ================= -->
+
+<section id="results" class="page">
+
+  <div class="topbar">
+    <div>
+      <h1>Simulation Results</h1>
+      <p class="muted">Review what you learned.</p>
+    </div>
+  </div>
+
+  <div id="resultsContent"></div>
+
+</section>
+
+
+<!-- ================= PROGRESS ================= -->
+
+<section id="progress" class="page">
+
+  <div class="topbar">
+    <div>
+      <h1>Your Progress</h1>
+      <p class="muted">
+        Review your learning activity.
+      </p>
+    </div>
+  </div>
+
+  <div class="twoCol">
+
+    <div class="card">
+
+      <h2>Overall score</h2>
+
+      <div class="progressCircle" id="progressCircle2">
+        <strong id="progressPercent2">0%</strong>
+      </div>
+
+      <div class="center muted">
+        Keep practicing to improve your awareness.
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Activity</h2>
+
+      <table class="table">
+
+        <tbody>
+          <tr>
+            <th>Lessons completed</th>
+            <td id="progressLessons">0</td>
+          </tr>
+
+          <tr>
+            <th>Scenarios completed</th>
+            <td id="progressScenarios">0</td>
+          </tr>
+
+          <tr>
+            <th>Correct decisions</th>
+            <td id="progressCorrect">0</td>
+          </tr>
+
+          <tr>
+            <th>Incorrect decisions</th>
+            <td id="progressWrong">0</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:20px">
+
+    <div class="sectionHeader">
+      <h2>Recent activity</h2>
+
+      <button class="btn" onclick="resetProgress()">
+        Reset demo data
+      </button>
+    </div>
+
+    <div id="activityList"></div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= SETTINGS ================= -->
+
+<section id="settings" class="page">
+
+  <div class="topbar">
+    <div>
+      <h1>Settings</h1>
+      <p class="muted">
+        Customize your training experience.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <div class="setting">
+      <div>
+        <strong>Training reminders</strong>
+        <p class="muted">Show reminder notifications.</p>
+      </div>
+
+      <button class="toggle on"
+        onclick="toggleSetting(this)">
+      </button>
+    </div>
+
+    <div class="setting">
+      <div>
+        <strong>Simulation hints</strong>
+        <p class="muted">Show additional hints during exercises.</p>
+      </div>
+
+      <button class="toggle on"
+        onclick="toggleSetting(this)">
+      </button>
+    </div>
+
+    <div class="setting">
+      <div>
+        <strong>Compact dashboard</strong>
+        <p class="muted">Use a more compact dashboard layout.</p>
+      </div>
+
+      <button class="toggle"
+        onclick="toggleSetting(this)">
+      </button>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:20px">
+
+    <h2>Profile</h2>
+
+    <div class="buttonRow">
+
+      <button class="btn btnPrimary"
+        onclick="changeName()">
+        Change display name
+      </button>
+
+      <button class="btn btnDanger"
+        onclick="resetProgress()">
+        Reset training data
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= HELP ================= -->
+
+<section id="help" class="page">
+
+  <div class="topbar">
+    <div>
+      <h1>Help Centre</h1>
+      <p class="muted">
+        Learn how to use PhishGuard.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <h3>What is this simulator?</h3>
+
+    <p class="muted" style="margin:10px 0 25px;line-height:1.7">
+      PhishGuard is a security-awareness training application.
+      It uses fictional scenarios to teach people how to identify
+      suspicious messages and social-engineering techniques.
+    </p>
+
+
+    <h3>What should I do when I see phishing?</h3>
+
+    <ul class="muted">
+      <li>Stop before clicking.</li>
+      <li>Inspect the sender and request.</li>
+      <li>Verify unusual requests through a trusted channel.</li>
+      <li>Report suspicious messages according to your organization's process.</li>
+    </ul>
+
+    <div class="alert">
+      Never enter real passwords, MFA codes, payment information,
+      or other secrets into a training simulation.
+    </div>
+
+    <div class="buttonRow">
+      <button class="btn btnPrimary" data-page="training">
+        Start training
+      </button>
+
+      <button class="btn" data-page="simulator">
+        Try a simulation
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+</div>
+
+
+<script>
+/* ============================================================
+   PHISHGUARD APPLICATION
+   ============================================================ */
+
+const STORAGE_KEY = "phishguard-demo-v1";
+
+
+const lessons = [
+
+  {
+    id:"basics",
+    icon:"🎣",
+    title:"What is phishing?",
+    description:"Understand the basic purpose of phishing and how attackers manipulate trust.",
+    quiz:"Which description best matches phishing?",
+    options:[
+      "A deceptive attempt to trick someone into taking an unsafe action.",
+      "A normal software update.",
+      "A method for improving Wi-Fi speed.",
+      "A password manager."
+    ],
+    answer:0,
+    explanation:"Phishing uses deception and social engineering to persuade someone to reveal information or perform an action."
+  },
+
+  {
+    id:"redflags",
+    icon:"🔎",
+    title:"Spot the red flags",
+    description:"Learn the warning signs commonly found in suspicious messages.",
+    quiz:"Which combination is most suspicious?",
+    options:[
+      "Urgency + unexpected request + unfamiliar sender",
+      "Known sender + expected meeting invitation",
+      "Routine internal announcement",
+      "A calendar reminder you created yourself"
+    ],
+    answer:0,
+    explanation:"Unexpected urgency combined with an unfamiliar sender is a strong warning sign."
+  },
+
+  {
+    id:"links",
+    icon:"🔗",
+    title:"Link safety",
+    description:"Learn why links deserve extra attention before you interact with them.",
+    quiz:"What is the safest response to an unexpected account link?",
+    options:[
+      "Open it immediately.",
+      "Forward it to everyone.",
+      "Verify the request independently before interacting.",
+      "Enter your password to see whether it works."
+    ],
+    answer:2,
+    explanation:"Independently verifying the request avoids relying on information supplied by a potentially fraudulent message."
+  },
+
+  {
+    id:"smishing",
+    icon:"📱",
+    title:"Smishing",
+    description:"Recognize phishing attempts delivered through SMS and mobile messaging.",
+    quiz:"What is smishing?",
+    options:[
+      "Phishing delivered through text messages.",
+      "A type of firewall.",
+      "A secure messaging protocol.",
+      "A backup system."
+    ],
+    answer:0,
+    explanation:"Smishing is phishing conducted through SMS or similar messaging channels."
+  },
+
+  {
+    id:"social",
+    icon:"🎭",
+    title:"Social engineering",
+    description:"Understand how attackers exploit authority, trust, urgency and emotion.",
+    quiz:"Why might an attacker impersonate a manager?",
+    options:[
+      "To exploit perceived authority and make the request seem legitimate.",
+      "To improve company morale.",
+      "To schedule a meeting.",
+      "To update a calendar."
+    ],
+    answer:0,
+    explanation:"Attackers may exploit authority and trust to make unusual requests seem legitimate."
+  },
+
+  {
+    id:"reporting",
+    icon:"🚨",
+    title:"Reporting incidents",
+    description:"Learn what to do after encountering a suspicious message.",
+    quiz:"What is a good response to suspected phishing?",
+    options:[
+      "Keep interacting with it.",
+      "Report it using the organization's approved process.",
+      "Forward it to random contacts.",
+      "Post it publicly."
+    ],
+    answer:1,
+    explanation:"Following your organization's reporting procedure helps security teams investigate and protect others."
+  }
+
+];
+
+
+const scenarios = [
+
+  {
+    id:"password",
+    icon:"🔐",
+    title:"Password alert",
+    description:"Analyze a fictional account-security notification.",
+    subject:"Immediate action required: Account verification",
+    sender:"IT Support <support@account-security.example>",
+    body:"We detected unusual activity. Please verify your account immediately to prevent access restrictions.",
+    correct:"report",
+    explanation:"The message uses urgency, an unexpected security claim and an unfamiliar fictional sender domain."
+  },
+
+  {
+    id:"payment",
+    icon:"💳",
+    title:"Payment request",
+    description:"Analyze an unexpected fictional payment request.",
+    subject:"Urgent: Updated payment instructions",
+    sender:"Accounts <billing@vendor-update.example>",
+    body:"Please review the updated payment instructions immediately. This request is time sensitive.",
+    correct:"verify",
+    explanation:"Unexpected financial requests should be independently verified using a trusted contact method."
+  },
+
+  {
+    id:"executive",
+    icon:"👔",
+    title:"Executive request",
+    description:"Identify social-engineering indicators in a fictional executive request.",
+    subject:"Need this handled urgently",
+    sender:"Executive Office <office@example.test>",
+    body:"Please handle this unusual request immediately. Do not delay.",
+    correct:"verify",
+    explanation:"Requests invoking authority and urgency deserve independent verification, especially when unusual."
+  },
+
+  {
+    id:"delivery",
+    icon:"📦",
+    title:"Delivery notification",
+    description:"Inspect a fictional delivery notification.",
+    subject:"Delivery problem — action required",
+    sender:"Delivery Service <notice@parcel-check.example>",
+    body:"Your delivery cannot be completed unless you confirm the requested details.",
+    correct:"report",
+    explanation:"Unexpected delivery messages asking for action should be treated cautiously and verified through the official service."
+  }
+
+];
+
+
+let state = loadState();
+
+
+function defaultState(){
+
+  return {
+    name:"Alex Morgan",
+    score:0,
+    correct:0,
+    wrong:0,
+    lessons:[],
+    scenarios:[],
+    activity:[]
+  };
+
+}
+
+
+function loadState(){
+
+  try{
+
+    const saved=localStorage.getItem(STORAGE_KEY);
+
+    return saved
+      ? {...defaultState(),...JSON.parse(saved)}
+      : defaultState();
+
+  }catch{
+
+    return defaultState();
+
+  }
+
+}
+
+
+function saveState(){
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(state)
+  );
+
+}
+
+
+function navigate(page){
+
+  document.querySelectorAll(".page")
+    .forEach(p=>p.classList.remove("active"));
+
+  const target=document.getElementById(page);
+
+  if(target){
+    target.classList.add("active");
+  }
+
+  document.querySelectorAll(".nav")
+    .forEach(n=>n.classList.remove("active"));
+
+  const nav=document.querySelector(
+    `.nav[data-page="${page}"]`
+  );
+
+  if(nav) nav.classList.add("active");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  updateUI();
+
+}
+
+
+document.addEventListener("click",event=>{
+
+  const target=event.target.closest("[data-page]");
+
+  if(!target)return;
+
+  const page=target.dataset.page;
+
+  navigate(page);
+
+});
+
+
+/* =========================
+   DASHBOARD
+   ========================= */
+
+function calculateScore(){
+
+  const total =
+    state.lessons.length +
+    state.scenarios.length;
+
+  if(total===0)return 0;
+
+  const earned =
+    state.lessons.length +
+    state.correct;
+
+  const possible =
+    lessons.length +
+    Math.max(state.scenarios.length,1);
+
+  return Math.min(
+    100,
+    Math.round(
+      ((earned)/(possible))*100
+    )
+  );
+
+}
+
+
+function updateUI(){
+
+  const score=calculateScore();
+
+  document.getElementById("scoreStat").textContent=score+"%";
+  document.getElementById("scenarioStat").textContent=state.scenarios.length;
+  document.getElementById("lessonStat").textContent=state.lessons.length;
+
+  document.getElementById("streakStat").textContent =
+    Math.min(
+      7,
+      state.lessons.length+
+      state.scenarios.length
+    )+" days";
+
+  document.getElementById("progressPercent").textContent=score+"%";
+  document.getElementById("progressPercent2").textContent=score+"%";
+
+  document.getElementById("progressCircle")
+    .style.setProperty("--progress",score+"%");
+
+  document.getElementById("progressCircle2")
+    .style.setProperty("--progress",score+"%");
+
+  document.getElementById("trainingProgress").textContent =
+    state.lessons.length+" completed";
+
+  document.getElementById("simulationProgress").textContent =
+    state.scenarios.length+" completed";
+
+  document.getElementById("progressLessons").textContent=
+    state.lessons.length;
+
+  document.getElementById("progressScenarios").textContent=
+    state.scenarios.length;
+
+  document.getElementById("progressCorrect").textContent=
+    state.correct;
+
+  document.getElementById("progressWrong").textContent=
+    state.wrong;
+
+  document.getElementById("userName").textContent=state.name;
+
+  renderActivity();
+
+}
+
+
+/* =========================
+   TRAINING
+   ========================= */
+
+function renderLessons(){
+
+  const container=document.getElementById("lessonGrid");
+
+  container.innerHTML=lessons.map(lesson=>{
+
+    const complete=state.lessons.includes(lesson.id);
+
+    return `
+
+      <div class="card lesson">
+
+        <div class="lessonIcon">${lesson.icon}</div>
+
+        <h3>${lesson.title}</h3>
+
+        <p>${lesson.description}</p>
+
+        <div class="bar">
+          <span style="width:${complete?100:0}%"></span>
+        </div>
+
+        <button
+          class="btn ${complete?"btnSuccess":"btnPrimary"}"
+          onclick="openLesson('${lesson.id}')">
+
+          ${complete?"Review lesson":"Start lesson"}
+
+        </button>
+
+      </div>
+
+    `;
+
+  }).join("");
+
+}
+
+
+function openLesson(id){
+
+  const lesson=lessons.find(x=>x.id===id);
+
+  if(!lesson)return;
+
+  document.getElementById("lessonContent").innerHTML=`
+
+    <div class="card">
+
+      <div style="font-size:40px;margin-bottom:12px">
+        ${lesson.icon}
+      </div>
+
+      <h1>${lesson.title}</h1>
+
+      <p class="muted" style="margin:10px 0 25px;line-height:1.7">
+        ${lesson.description}
+      </p>
+
+      <div class="alert">
+        <strong>Learning objective</strong><br>
+        Understand the warning signs and make safer decisions
+        when receiving unexpected requests.
+      </div>
+
+      <h2 style="margin:25px 0 15px">
+        Quick knowledge check
+      </h2>
+
+      <p style="margin-bottom:15px">
+        ${lesson.quiz}
+      </p>
+
+      <div id="quizOptions">
+
+        ${lesson.options.map((option,index)=>`
+
+          <button
+            class="quizOption"
+            onclick="answerLesson('${lesson.id}',${index})">
+
+            ${option}
+
+          </button>
+
+        `).join("")}
+
+      </div>
+
+      <div id="quizFeedback"></div>
+
+    </div>
+
+  `;
+
+  navigate("lessonPage");
+
+}
+
+
+function answerLesson(id,index){
+
+  const lesson=lessons.find(x=>x.id===id);
+
+  const buttons=document.querySelectorAll(".quizOption");
+
+  buttons.forEach((button,i)=>{
+
+    button.disabled=true;
+
+    if(i===lesson.answer){
+      button.classList.add("correct");
+    }
+
+    if(i===index && i!==lesson.answer){
+      button.classList.add("wrong");
+    }
+
+  });
+
+  const feedback=document.getElementById("quizFeedback");
+
+  const correct=index===lesson.answer;
+
+  if(correct){
+
+    if(!state.lessons.includes(id)){
+      state.lessons.push(id);
+    }
+
+    state.activity.unshift({
+      type:"Lesson completed",
+      title:lesson.title,
+      result:"Correct",
+      date:new Date().toLocaleString()
+    });
+
+    feedback.innerHTML=`
+
+      <div class="feedback good">
+
+        <strong>✓ Correct</strong>
+
+        <p>${lesson.explanation}</p>
+
+        <div class="buttonRow">
+
+          <button
+            class="btn btnPrimary"
+            onclick="nextLesson('${id}')">
+
+            ${getNextLesson(id)?"Next lesson":"Finish training"}
+
+          </button>
+
+          <button
+            class="btn"
+            data-page="training">
+
+            Back to training
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }else{
+
+    state.wrong++;
+
+    feedback.innerHTML=`
+
+      <div class="feedback bad">
+
+        <strong>Not quite.</strong>
+
+        <p>
+          Review the highlighted correct answer and try the lesson again.
+        </p>
+
+        <p>${lesson.explanation}</p>
+
+        <div class="buttonRow">
+
+          <button
+            class="btn btnPrimary"
+            onclick="openLesson('${id}')">
+
+            Try again
+
+          </button>
+
+          <button
+            class="btn"
+            data-page="training">
+
+            Back to training
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+  saveState();
+  updateUI();
+
+}
+
+
+function getNextLesson(id){
+
+  const index=lessons.findIndex(x=>x.id===id);
+
+  return lessons[index+1] || null;
+
+}
+
+
+function nextLesson(id){
+
+  const next=getNextLesson(id);
+
+  if(next){
+
+    openLesson(next.id);
+
+  }else{
+
+    navigate("training");
+
+  }
+
+}
+
+
+/* =========================
+   SIMULATOR
+   ========================= */
+
+function renderScenarios(){
+
+  const container=document.getElementById("scenarioGrid");
+
+  container.innerHTML=scenarios.map(s=>{
+
+    const completed=state.scenarios.includes(s.id);
+
+    return `
+
+      <div class="card lesson">
+
+        <div class="lessonIcon">${s.icon}</div>
+
+        <h3>${s.title}</h3>
+
+        <p>${s.description}</p>
+
+        <span class="badge">
+          ${completed?"Completed":"Available"}
+        </span>
+
+        <div class="buttonRow">
+
+          <button
+            class="btn btnPrimary"
+            onclick="openScenario('${s.id}')">
+
+            ${completed?"Replay":"Start scenario"}
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }).join("");
+
+}
+
+
+function openScenario(id){
+
+  const scenario=scenarios.find(x=>x.id===id);
+
+  if(!scenario)return;
+
+  document.getElementById("scenarioContent").innerHTML=`
+
+    <div class="card">
+
+      <div class="sectionHeader">
+
+        <div>
+          <div style="font-size:35px">${scenario.icon}</div>
+          <h1>${scenario.title}</h1>
+        </div>
+
+        <span class="badge">TRAINING ONLY</span>
+
+      </div>
+
+      <div class="email">
+
+        <div class="emailHeader">
+
+          <div class="subject">
+            ${scenario.subject}
+          </div>
+
+          <div class="emailMeta">
+            From: ${scenario.sender}<br>
+            To: alex@example.test
+          </div>
+
+        </div>
+
+        <div class="emailBody">
+
+          <p>${scenario.body}</p>
+
+          <div class="fakeLink">
+            Review request
+          </div>
+
+          <p>
+            Example Security Team
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="alert">
+
+        <strong>Your task:</strong><br>
+
+        Decide what the safest response would be.
+
+        This is a fictional simulation. No real link,
+        account or credential is involved.
+
+      </div>
+
+      <div class="buttonRow">
+
+        <button
+          class="btn btnSuccess"
+          onclick="answerScenario('${id}','report')">
+
+          🚩 Report
+
+        </button>
+
+        <button
+          class="btn btnPrimary"
+          onclick="answerScenario('${id}','verify')">
+
+          🔎 Verify independently
+
+        </button>
+
+        <button
+          class="btn btnDanger"
+          onclick="answerScenario('${id}','click')">
+
+          ⚠️ Interact with message
+
+        </button>
+
+      </div>
+
+      <div id="scenarioFeedback"></div>
+
+    </div>
+
+  `;
+
+  navigate("scenarioPage");
+
+}
+
+
+function answerScenario(id,choice){
+
+  const scenario=scenarios.find(x=>x.id===id);
+
+  if(!scenario)return;
+
+  const correct=choice===scenario.correct;
+
+  if(!state.scenarios.includes(id)){
+    state.scenarios.push(id);
+  }
+
+  if(correct){
+    state.correct++;
+  }else{
+    state.wrong++;
+  }
+
+  state.activity.unshift({
+    type:"Simulation completed",
+    title:scenario.title,
+    result:correct?"Correct":"Needs review",
+    date:new Date().toLocaleString()
+  });
+
+  saveState();
+
+  const feedback=document.getElementById("scenarioFeedback");
+
+  feedback.innerHTML=`
+
+    <div class="feedback ${correct?"good":"bad"}">
+
+      <strong>
+        ${correct?"✓ Good decision":"⚠ Needs review"}
+      </strong>
+
+      <p style="margin-top:7px">
+        ${scenario.explanation}
+      </p>
+
+      <div class="buttonRow">
+
+        <button
+          class="btn btnPrimary"
+          onclick="showResults('${id}',${correct})">
+
+          View results
+
+        </button>
+
+        <button
+          class="btn"
+          data-page="simulator">
+
+          Back to scenarios
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+  updateUI();
+
+}
+
+
+/* =========================
+   RESULTS
+   ========================= */
+
+function showResults(id,correct){
+
+  const scenario=scenarios.find(x=>x.id===id);
+
+  document.getElementById("resultsContent").innerHTML=`
+
+    <div class="card center">
+
+      <div style="font-size:60px">
+        ${correct?"🎉":"📚"}
+      </div>
+
+      <h1 style="margin-top:10px">
+        ${correct?"Excellent work!":"Keep practicing!"}
+      </h1>
+
+      <p class="muted" style="margin:12px auto;max-width:600px;line-height:1.7">
+        ${scenario.explanation}
+      </p>
+
+      <div class="buttonRow" style="justify-content:center">
+
+        <button
+          class="btn btnPrimary"
+          data-page="simulator">
+
+          Try another scenario
+
+        </button>
+
+        <button
+          class="btn"
+          data-page="dashboard">
+
+          Return to dashboard
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+  navigate("results");
+
+}
+
+
+/* =========================
+   SIMULATION DASHBOARD
+   ========================= */
+
+function evaluateSimulation(choice){
+
+  const correct=choice==="report";
+
+  if(correct)state.correct++;
+  else state.wrong++;
+
+  const feedback=document.getElementById("dashboardFeedback");
+
+  feedback.innerHTML=`
+
+    <div class="feedback ${correct?"good":"bad"}">
+
+      <strong>
+        ${correct?"✓ Good decision":"⚠ Review the warning signs"}
+      </strong>
+
+      <p>
+        This fictional message contains several phishing indicators:
+      </p>
+
+      <ul>
+        <li>Unexpected security request</li>
+        <li>Urgent language</li>
+        <li>Unfamiliar sender domain</li>
+      </ul>
+
+      <div class="buttonRow">
+
+        <button class="btn btnPrimary"
+          data-page="simulator">
+          More simulations
+        </button>
+
+        <button class="btn"
+          data-page="training">
+          Review training
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+  state.activity.unshift({
+    type:"Dashboard simulation",
+    title:"Today's simulation",
+    result:correct?"Correct":"Needs review",
+    date:new Date().toLocaleString()
+  });
+
+  saveState();
+  updateUI();
+
+}
+
+
+/* =========================
+   ACTIVITY
+   ========================= */
+
+function renderActivity(){
+
+  const container=document.getElementById("activityList");
+
+  if(!state.activity.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        No activity yet. Start a lesson or simulation.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML=state.activity
+    .slice(0,10)
+    .map(item=>`
+
+      <div class="module">
+
+        <div class="moduleIcon">
+          ${item.type.includes("Lesson")?"🎓":"🎣"}
+        </div>
+
+        <div class="moduleInfo">
+
+          <strong>${item.title}</strong>
+
+          <span>
+            ${item.type} · ${item.date}
+          </span>
+
+        </div>
+
+        <span class="${item.result==="Correct"?"green":"yellow"}">
+          ${item.result}
+        </span>
+
+      </div>
+
+    `)
+    .join("");
+
+}
+
+
+/* =========================
+   SETTINGS
+   ========================= */
+
+function toggleSetting(button){
+
+  button.classList.toggle("on");
+
+}
+
+
+function changeName(){
+
+  const name=prompt(
+    "Enter your display name:",
+    state.name
+  );
+
+  if(name && name.trim()){
+
+    state.name=name.trim();
+
+    saveState();
+    updateUI();
+
+  }
+
+}
+
+
+function resetProgress(){
+
+  const confirmed=confirm(
+    "Reset all demo training progress?"
+  );
+
+  if(!confirmed)return;
+
+  state=defaultState();
+
+  saveState();
+
+  renderLessons();
+  renderScenarios();
+  updateUI();
+
+  navigate("dashboard");
+
+}
+
+
+/* =========================
+   INITIALIZE
+   ========================= */
+
+function init(){
+
+  renderLessons();
+  renderScenarios();
+  updateUI();
+
+}
+
+init();
+
+</script>
+
+</body>
+</html>
+
+
+
